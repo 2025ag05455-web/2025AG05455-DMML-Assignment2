@@ -1,0 +1,33 @@
+# Runtime + test dependencies of the recommendation pipeline (Python 3.11).
+# Ranges allow patch releases only (lower bound = version the pipeline was built and
+# tested with), so a fresh `make setup` reproduces the same behaviour.
+# Exact versions of every run are also recorded in reports/pipeline_run_summary.json.
+
+# data processing
+pandas>=2.2.3,<2.3
+numpy>=2.0.2,<2.1
+pyarrow>=19.0.1,<20
+scipy>=1.17.1,<1.18
+pyyaml>=6.0.3,<7
+requests>=2.34.2,<3
+
+# data validation
+pandera>=0.23.1,<0.24
+
+# experiment tracking and orchestration
+mlflow>=2.22.5,<2.23
+prefect>=3.4.25,<3.5
+# Prefect 3.4.x's API server is incompatible with newer FastAPI/Starlette routing internals
+# (Body(min_items=...) removed, router changes); pin to the releases Prefect 3.4.25 shipped against.
+fastapi>=0.115,<0.120
+# MLflow 2.22's SQL tracking store imports sqlalchemy.pool.FallbackAsyncAdaptedQueuePool,
+# which SQLAlchemy 2.1 removed (breaks `mlflow ui` / `make mlflow-ui`).
+sqlalchemy>=2.0,<2.1
+
+# reporting and diagrams
+matplotlib>=3.11.2,<3.12
+reportlab>=5.1.0,<6
+graphviz>=0.21,<0.22
+
+# tests
+pytest>=9.2.0,<10

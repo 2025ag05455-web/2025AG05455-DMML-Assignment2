@@ -1,0 +1,92 @@
+# ---------------------------------------------------------------------------
+# End-to-End Recommendation Pipeline - central configuration
+# All relative paths are resolved against the project root by src/utils/config.py
+# ---------------------------------------------------------------------------
+project:
+  name: recommendation-pipeline
+  seed: 42
+
+paths:
+  raw_dir: data/raw
+  interim_dir: data/interim          # validated, typed data (output of validation)
+  processed_dir: data/processed      # cleaned data, train/test split, derived datasets
+  features_dir: data/features        # offline feature store
+  errors_dir: data/errors            # quarantined / invalid records
+  models_dir: models
+  reports_dir: reports
+  figures_dir: reports/figures
+  logs_dir: logs
+
+ingestion:
+  source: movielens-100k
+  url: https://files.grouplens.org/datasets/movielens/ml-100k.zip
+  # If the zip is already present in raw_dir it is reused (offline-friendly).
+  download_timeout_sec: 60
+  # MovieLens-100K is a curated, clean dataset. To demonstrate that the validation
+  # layer actually catches problems, a small, seeded and fully documented set of
+  # synthetic data-quality anomalies is injected into the raw landing files.
+  inject_anomalies: true
+  anomaly_seed: 7
+
+validation:
+  rating_min: 1
+  rating_max: 5
+  allowed_ratings: [1, 2, 3, 4, 5]
+  # MovieLens-100K was collected Sep-1997 .. Apr-1998; anything outside this window is invalid
+  min_timestamp: "1995-01-01T00:00:00Z"
+  max_timestamp: "2000-12-31T23:59:59Z"
+  age_min: 5
+  age_max: 100
+  allowed_genders: ["M", "F"]
+  # Fail the pipeline if more than this fraction of interactions is rejected
+  max_error_rate: 0.05
+
+preparation:
+  # duplicate (user_id, item_id) interactions: keep the most recent one
+  duplicate_policy: keep_latest
+  impute_age: median
+  unknown_token: unknown
+
+split:
+  method: time_based          # global temporal split on interaction timestamp
+  test_fraction: 0.2          # last 20% of interactions (by time) form the test set
+  min_user_train_interactions: 1
+
+features:
+  feature_set_version: v1
+  min_item_ratings_for_avg: 5      # Bayesian damping strength for item average rating
+  top_n_genres: 3
+
+training:
+  mlflow:
+    tracking_uri: sqlite:///mlflow.db
+    artifact_location: mlartifacts
+    experiment_name: movielens-recsys
+    pipeline_version: "1.0.0"        # tagged on every run (with the config sha256 for exact lineage)
+  models:
+    popularity:
+      enabled: true
+      score: count                   # count | bayesian_avg
+      damping: 10                    # for rating prediction (item bias shrinkage)
+    item_knn:
+      enabled: true
+      k_neighbors: 50
+      similarity: cosine
+      shrinkage: 10
+    mf_svd:
+      enabled: true
+      n_factors: 50
+      n_epochs: 30
+      lr: 0.007
+      reg: 0.05
+      init_std: 0.1
+    hybrid:
+      enabled: true
+      base_model: mf_svd
+      alpha: 0.7                     # weight of collaborative score vs content (genre affinity) score
+
+evaluation:
+  k: 10
+  extra_k: [5]
+  relevance_threshold: 4            # test ratings >= 4 are considered relevant
+  primary_metric: ndcg_at_k

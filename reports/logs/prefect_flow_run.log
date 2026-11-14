@@ -1,0 +1,171 @@
+00:17:07.398 | INFO    | prefect - Starting temporary server on http://127.0.0.1:8431
+See https://docs.prefect.io/v3/concepts/server#how-to-guides for more information on running a dedicated Prefect server.
+00:17:09.755 | INFO    | Flow run 'certain-roadrunner' - Beginning flow run 'certain-roadrunner' for flow 'recommendation-pipeline'
+00:17:09.758 | INFO    | Flow run 'certain-roadrunner' - Execution plan: ingestion -> validation -> preparation -> transformation -> features -> training -> evaluation
+00:17:09.807 | INFO    | Task run 'ingest_data-85a' - Starting stage 'ingestion' (src.ingestion.ingest): Download MovieLens-100K, land raw CSV files and a lineage manifest
+2026-11-14 00:17:09,875 | INFO    | ingestion | Reusing cached archive data/raw/source/ml-100k.zip
+2026-11-14 00:17:09,955 | INFO    | ingestion | Parsed source: users=943 items=1682 interactions=100000
+2026-11-14 00:17:09,965 | INFO    | ingestion | Injected synthetic anomalies: {'interactions': {'exact_duplicate': 25, 'rating_out_of_range': 10, 'rating_wrong_type': 6, 'missing_key': 10, 'invalid_timestamp': 10, 'orphan_user': 5, 'orphan_item': 5}, 'users': {'missing_age': 5, 'invalid_age': 3, 'invalid_gender': 2, 'exact_duplicate': 3}, 'items': {'missing_title': 2, 'invalid_release_date': 2, 'exact_duplicate': 2}}
+2026-11-14 00:17:10,021 | INFO    | ingestion | Ingestion complete: {'users': 946, 'items': 1684, 'interactions': 100071}
+00:17:10.022 | INFO    | Task run 'ingest_data-85a' - Stage 'ingestion' summary: {"stage": "ingestion", "rows": {"users": 946, "items": 1684, "interactions": 100071}, "anomalies_injected": {"interactions": {"exact_duplicate": 25, "rating_out_of_range": 10, "rating_wrong_type": 6, "missing_key": 10, "invalid_timestamp": 10, "orphan_user": 5, "orphan_item": 5}, "users": {"missing_age": 5, "invalid_age": 3, "invalid_gender": 2, "exact_duplicate": 3}, "items": {"missing_title": 2, "invalid_release_date": 2, "exact_duplicate": 2}}}
+00:17:10.042 | INFO    | Task run 'ingest_data-85a' - Finished in state Completed()
+00:17:10.075 | INFO    | Task run 'validate_data-02c' - Starting stage 'validation' (src.validation.validate): Schema and quality checks; quarantine invalid rows; validation report
+2026-11-14 00:17:10,137 | INFO    | validation | Validating {'users': 'data/raw/users.csv', 'items': 'data/raw/items.csv', 'interactions': 'data/raw/interactions.csv'}
+2026-11-14 00:17:10,163 | INFO    | validation | users        | required_columns       | *              | error   | failed      0 / 5      (  0.000%) | passed
+2026-11-14 00:17:10,167 | WARNING | validation | users        | exact_duplicate        | *              | error   | failed      3 / 946    (  0.317%) | row quarantined (first occurrence kept)
+2026-11-14 00:17:10,168 | INFO    | validation | users        | missing_value          | user_id        | error   | failed      0 / 943    (  0.000%) | passed
+2026-11-14 00:17:10,169 | WARNING | validation | users        | missing_value          | age            | warning | failed      5 / 943    (  0.530%) | row kept, value set to null
+2026-11-14 00:17:10,169 | WARNING | validation | users        | missing_value          | gender         | warning | failed      1 / 943    (  0.106%) | row kept, value set to null
+2026-11-14 00:17:10,170 | INFO    | validation | users        | missing_value          | occupation     | warning | failed      0 / 943    (  0.000%) | passed
+2026-11-14 00:17:10,170 | INFO    | validation | users        | missing_value          | zip_code       | warning | failed      0 / 943    (  0.000%) | passed
+2026-11-14 00:17:10,171 | INFO    | validation | users        | invalid_type           | user_id        | error   | failed      0 / 943    (  0.000%) | passed
+2026-11-14 00:17:10,171 | INFO    | validation | users        | non_integer_value      | user_id        | error   | failed      0 / 943    (  0.000%) | passed
+2026-11-14 00:17:10,172 | WARNING | validation | users        | invalid_type           | age            | warning | failed      1 / 943    (  0.106%) | row kept, value set to null
+2026-11-14 00:17:10,172 | INFO    | validation | users        | non_integer_value      | age            | warning | failed      0 / 943    (  0.000%) | passed
+2026-11-14 00:17:10,183 | INFO    | validation | users        | duplicate_key          | user_id        | error   | failed      0 / 943    (  0.000%) | passed
+2026-11-14 00:17:10,184 | WARNING | validation | users        | age_out_of_range       | age            | warning | failed      2 / 943    (  0.212%) | row kept, value set to null
+2026-11-14 00:17:10,184 | WARNING | validation | users        | gender_not_allowed     | gender         | warning | failed      1 / 943    (  0.106%) | row kept, value set to null
+2026-11-14 00:17:10,187 | INFO    | validation | users        | contract gate passed (943 rows x 5 columns)
+2026-11-14 00:17:10,188 | INFO    | validation | items        | required_columns       | *              | error   | failed      0 / 24     (  0.000%) | passed
+2026-11-14 00:17:10,202 | WARNING | validation | items        | exact_duplicate        | *              | error   | failed      2 / 1684   (  0.119%) | row quarantined (first occurrence kept)
+2026-11-14 00:17:10,204 | INFO    | validation | items        | missing_value          | item_id        | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,204 | WARNING | validation | items        | missing_value          | title          | warning | failed      2 / 1682   (  0.119%) | row kept, value set to null
+2026-11-14 00:17:10,205 | WARNING | validation | items        | missing_value          | release_date   | warning | failed      1 / 1682   (  0.059%) | row kept, value set to null
+2026-11-14 00:17:10,205 | WARNING | validation | items        | missing_value          | imdb_url       | warning | failed      3 / 1682   (  0.178%) | row kept, value set to null
+2026-11-14 00:17:10,206 | INFO    | validation | items        | missing_value          | genre_unknown  | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,206 | INFO    | validation | items        | missing_value          | genre_action   | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,207 | INFO    | validation | items        | missing_value          | genre_adventure | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,207 | INFO    | validation | items        | missing_value          | genre_animation | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,208 | INFO    | validation | items        | missing_value          | genre_childrens | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,208 | INFO    | validation | items        | missing_value          | genre_comedy   | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,208 | INFO    | validation | items        | missing_value          | genre_crime    | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,209 | INFO    | validation | items        | missing_value          | genre_documentary | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,209 | INFO    | validation | items        | missing_value          | genre_drama    | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,210 | INFO    | validation | items        | missing_value          | genre_fantasy  | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,210 | INFO    | validation | items        | missing_value          | genre_film_noir | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,210 | INFO    | validation | items        | missing_value          | genre_horror   | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,211 | INFO    | validation | items        | missing_value          | genre_musical  | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,211 | INFO    | validation | items        | missing_value          | genre_mystery  | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,212 | INFO    | validation | items        | missing_value          | genre_romance  | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,212 | INFO    | validation | items        | missing_value          | genre_sci_fi   | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,213 | INFO    | validation | items        | missing_value          | genre_thriller | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,213 | INFO    | validation | items        | missing_value          | genre_war      | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,213 | INFO    | validation | items        | missing_value          | genre_western  | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,214 | INFO    | validation | items        | invalid_type           | item_id        | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,215 | INFO    | validation | items        | non_integer_value      | item_id        | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,216 | WARNING | validation | items        | invalid_type           | release_date   | warning | failed      2 / 1682   (  0.119%) | row kept, value set to null
+2026-11-14 00:17:10,218 | INFO    | validation | items        | invalid_type           | genre_unknown  | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,218 | INFO    | validation | items        | non_integer_value      | genre_unknown  | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,219 | INFO    | validation | items        | invalid_type           | genre_action   | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,219 | INFO    | validation | items        | non_integer_value      | genre_action   | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,220 | INFO    | validation | items        | invalid_type           | genre_adventure | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,220 | INFO    | validation | items        | non_integer_value      | genre_adventure | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,221 | INFO    | validation | items        | invalid_type           | genre_animation | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,221 | INFO    | validation | items        | non_integer_value      | genre_animation | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,222 | INFO    | validation | items        | invalid_type           | genre_childrens | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,222 | INFO    | validation | items        | non_integer_value      | genre_childrens | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,223 | INFO    | validation | items        | invalid_type           | genre_comedy   | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,223 | INFO    | validation | items        | non_integer_value      | genre_comedy   | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,224 | INFO    | validation | items        | invalid_type           | genre_crime    | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,224 | INFO    | validation | items        | non_integer_value      | genre_crime    | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,225 | INFO    | validation | items        | invalid_type           | genre_documentary | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,225 | INFO    | validation | items        | non_integer_value      | genre_documentary | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,226 | INFO    | validation | items        | invalid_type           | genre_drama    | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,227 | INFO    | validation | items        | non_integer_value      | genre_drama    | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,227 | INFO    | validation | items        | invalid_type           | genre_fantasy  | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,228 | INFO    | validation | items        | non_integer_value      | genre_fantasy  | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,229 | INFO    | validation | items        | invalid_type           | genre_film_noir | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,229 | INFO    | validation | items        | non_integer_value      | genre_film_noir | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,230 | INFO    | validation | items        | invalid_type           | genre_horror   | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,230 | INFO    | validation | items        | non_integer_value      | genre_horror   | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,231 | INFO    | validation | items        | invalid_type           | genre_musical  | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,231 | INFO    | validation | items        | non_integer_value      | genre_musical  | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,232 | INFO    | validation | items        | invalid_type           | genre_mystery  | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,232 | INFO    | validation | items        | non_integer_value      | genre_mystery  | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,233 | INFO    | validation | items        | invalid_type           | genre_romance  | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,233 | INFO    | validation | items        | non_integer_value      | genre_romance  | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,234 | INFO    | validation | items        | invalid_type           | genre_sci_fi   | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,234 | INFO    | validation | items        | non_integer_value      | genre_sci_fi   | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,235 | INFO    | validation | items        | invalid_type           | genre_thriller | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,235 | INFO    | validation | items        | non_integer_value      | genre_thriller | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,236 | INFO    | validation | items        | invalid_type           | genre_war      | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,236 | INFO    | validation | items        | non_integer_value      | genre_war      | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,237 | INFO    | validation | items        | invalid_type           | genre_western  | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,237 | INFO    | validation | items        | non_integer_value      | genre_western  | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,242 | INFO    | validation | items        | duplicate_key          | item_id        | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,243 | INFO    | validation | items        | genre_flag_not_binary  | genre_unknown  | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,243 | INFO    | validation | items        | genre_flag_not_binary  | genre_action   | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,244 | INFO    | validation | items        | genre_flag_not_binary  | genre_adventure | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,244 | INFO    | validation | items        | genre_flag_not_binary  | genre_animation | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,244 | INFO    | validation | items        | genre_flag_not_binary  | genre_childrens | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,245 | INFO    | validation | items        | genre_flag_not_binary  | genre_comedy   | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,245 | INFO    | validation | items        | genre_flag_not_binary  | genre_crime    | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,245 | INFO    | validation | items        | genre_flag_not_binary  | genre_documentary | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,246 | INFO    | validation | items        | genre_flag_not_binary  | genre_drama    | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,246 | INFO    | validation | items        | genre_flag_not_binary  | genre_fantasy  | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,247 | INFO    | validation | items        | genre_flag_not_binary  | genre_film_noir | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,247 | INFO    | validation | items        | genre_flag_not_binary  | genre_horror   | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,247 | INFO    | validation | items        | genre_flag_not_binary  | genre_musical  | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,248 | INFO    | validation | items        | genre_flag_not_binary  | genre_mystery  | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,248 | INFO    | validation | items        | genre_flag_not_binary  | genre_romance  | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,248 | INFO    | validation | items        | genre_flag_not_binary  | genre_sci_fi   | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,249 | INFO    | validation | items        | genre_flag_not_binary  | genre_thriller | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,249 | INFO    | validation | items        | genre_flag_not_binary  | genre_war      | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,250 | INFO    | validation | items        | genre_flag_not_binary  | genre_western  | error   | failed      0 / 1682   (  0.000%) | passed
+2026-11-14 00:17:10,257 | INFO    | validation | items        | contract gate passed (1682 rows x 23 columns)
+2026-11-14 00:17:10,259 | INFO    | validation | interactions | required_columns       | *              | error   | failed      0 / 4      (  0.000%) | passed
+2026-11-14 00:17:10,349 | WARNING | validation | interactions | exact_duplicate        | *              | error   | failed     25 / 100071 (  0.025%) | row quarantined (first occurrence kept)
+2026-11-14 00:17:10,367 | WARNING | validation | interactions | missing_value          | user_id        | error   | failed      5 / 100046 (  0.005%) | row rejected
+2026-11-14 00:17:10,380 | WARNING | validation | interactions | missing_value          | item_id        | error   | failed      5 / 100046 (  0.005%) | row rejected
+2026-11-14 00:17:10,394 | WARNING | validation | interactions | missing_value          | rating         | error   | failed      1 / 100046 (  0.001%) | row rejected
+2026-11-14 00:17:10,407 | INFO    | validation | interactions | missing_value          | timestamp      | error   | failed      0 / 100046 (  0.000%) | passed
+2026-11-14 00:17:10,442 | INFO    | validation | interactions | invalid_type           | user_id        | error   | failed      0 / 100046 (  0.000%) | passed
+2026-11-14 00:17:10,446 | INFO    | validation | interactions | non_integer_value      | user_id        | error   | failed      0 / 100046 (  0.000%) | passed
+2026-11-14 00:17:10,482 | INFO    | validation | interactions | invalid_type           | item_id        | error   | failed      0 / 100046 (  0.000%) | passed
+2026-11-14 00:17:10,487 | INFO    | validation | interactions | non_integer_value      | item_id        | error   | failed      0 / 100046 (  0.000%) | passed
+2026-11-14 00:17:10,520 | WARNING | validation | interactions | invalid_type           | rating         | error   | failed      3 / 100046 (  0.003%) | row rejected
+2026-11-14 00:17:10,526 | WARNING | validation | interactions | non_integer_value      | rating         | error   | failed      2 / 100046 (  0.002%) | row rejected
+2026-11-14 00:17:10,566 | WARNING | validation | interactions | invalid_type           | timestamp      | error   | failed      4 / 100046 (  0.004%) | row rejected
+2026-11-14 00:17:10,570 | INFO    | validation | interactions | non_integer_value      | timestamp      | error   | failed      0 / 100046 (  0.000%) | passed
+2026-11-14 00:17:10,584 | WARNING | validation | interactions | referential_integrity  | user_id        | error   | failed      5 / 100046 (  0.005%) | row rejected
+2026-11-14 00:17:10,587 | WARNING | validation | interactions | referential_integrity  | item_id        | error   | failed      5 / 100046 (  0.005%) | row rejected
+2026-11-14 00:17:10,589 | WARNING | validation | interactions | rating_not_allowed     | rating         | error   | failed     10 / 100046 (  0.010%) | row rejected
+2026-11-14 00:17:10,592 | WARNING | validation | interactions | timestamp_out_of_range | timestamp      | error   | failed      6 / 100046 (  0.006%) | row rejected
+2026-11-14 00:17:10,610 | INFO    | validation | interactions | duplicate_interaction  | user_id+item_id | warning | failed      0 / 100000 (  0.000%) | passed
+2026-11-14 00:17:10,618 | INFO    | validation | interactions | contract gate passed (100000 rows x 4 columns)
+2026-11-14 00:17:10,847 | INFO    | validation | Validation complete: {'stage': 'validation', 'status': 'passed', 'rows_in': {'users': 946, 'items': 1684, 'interactions': 100071}, 'rows_out': {'users': 943, 'items': 1682, 'interactions': 100000}, 'rejected_rows': {'users': 3, 'items': 2, 'interactions': 71}, 'warning_rows': {'users': 10, 'items': 7, 'interactions': 0}, 'interaction_hard_error_rate': 0.000709, 'ground_truth_recall': 1.0, 'outputs': {'users': 'data/interim/users.parquet', 'items': 'data/interim/items.parquet', 'interactions': 'data/interim/interactions.parquet'}, 'reports': {'json': 'reports/validation_report.json', 'md': 'reports/validation_report.md'}}
+00:17:10.847 | INFO    | Task run 'validate_data-02c' - Stage 'validation' summary: {"stage": "validation", "status": "passed", "rows_in": {"users": 946, "items": 1684, "interactions": 100071}, "rows_out": {"users": 943, "items": 1682, "interactions": 100000}, "rejected_rows": {"users": 3, "items": 2, "interactions": 71}, "warning_rows": {"users": 10, "items": 7, "interactions": 0}, "interaction_hard_error_rate": 0.000709, "ground_truth_recall": 1.0, "outputs": {"users": "data/interim/users.parquet", "items": "data/interim/items.parquet", "interactions": "data/interim/interactions.parquet"}, "reports": {"json": "reports/validation_report.json", "md": "reports/validation_report.md"}}
+00:17:10.877 | INFO    | Task run 'validate_data-02c' - Finished in state Completed()
+00:17:10.907 | INFO    | Task run 'prepare_data-524' - Starting stage 'preparation' (src.preparation.prepare): Impute, normalise, de-duplicate and time-split into train/test
+2026-11-14 00:17:10,914 | INFO    | preparation | Loaded validated data: users=943 items=1682 interactions=100000
+2026-11-14 00:17:10,979 | INFO    | preparation | Preparation complete: cutoff=1998-03-07T02:21:09+00:00 train=80003 test=19997 (warm test users=109, cold=192)
+00:17:10.980 | INFO    | Task run 'prepare_data-524' - Stage 'preparation' summary: {"stage": "preparation", "rows": {"users_clean": 943, "items_clean": 1682, "interactions_clean": 100000, "train": 80003, "test": 19997}, "age_imputed": 8, "duplicates_resolved": 0, "split": {"cutoff_timestamp": 889237269, "cutoff_time_utc": "1998-03-07T02:21:09+00:00", "n_train": 80003, "n_test": 19997, "n_warm_test_users": 109, "n_cold_test_users": 192, "n_cold_test_items": 66}}
+00:17:10.996 | INFO    | Task run 'prepare_data-524' - Finished in state Completed()
+00:17:11.026 | INFO    | Task run 'transform_data-448' - Starting stage 'transformation' (src.transformation.transform): Derive train-only aggregates and the sparse user-item matrix
+2026-11-14 00:17:11,171 | INFO    | transformation | Loaded train=80003 users=943 items=1682
+2026-11-14 00:17:11,217 | INFO    | transformation | Transformation complete: matrix [943, 1682] nnz=80003 density=0.0504
+00:17:11.217 | INFO    | Task run 'transform_data-448' - Stage 'transformation' summary: {"stage": "transformation", "rows": {"user_activity_summary": 751, "item_popularity": 1616, "genre_popularity": 19}, "global_mean_rating": 3.517593, "matrix": {"shape": [943, 1682], "nnz": 80003, "density": 0.050439, "sparsity": 0.949561, "empty_rows": 192, "empty_cols": 66}, "top_genres_by_ratings": ["drama", "comedy", "action"]}
+00:17:11.235 | INFO    | Task run 'transform_data-448' - Finished in state Completed()
+00:17:11.263 | INFO    | Task run 'build_features-344' - Starting stage 'features' (src.features.build_features): Point-in-time user/item features in the offline feature store
+2026-11-14 00:17:11,336 | INFO    | features | Features built as of 1998-03-07T02:21:09+00:00: {'user_features': 943, 'item_features': 1682, 'user_genre_affinity': 943}
+00:17:11.336 | INFO    | Task run 'build_features-344' - Stage 'features' summary: {"stage": "features", "version": "v1", "as_of": "1998-03-07T02:21:09+00:00", "rows": {"user_features": 943, "item_features": 1682, "user_genre_affinity": 943}, "n_features": {"user_features": 13, "item_features": 29, "user_genre_affinity": 19, "on_demand": 3}, "n_cold_users": 192, "n_cold_items": 66, "catalog": "reports/feature_catalog.md"}
+00:17:11.352 | INFO    | Task run 'build_features-344' - Finished in state Completed()
+00:17:13.124 | INFO    | Task run 'train_models-315' - Starting stage 'training' (src.training.train): Fit popularity, item-kNN, MF and hybrid recommenders; track runs in MLflow
+2026-11-14 00:17:14,415 | INFO    | training | Training ['popularity', 'item_knn', 'mf_svd', 'hybrid'] on 80003 interactions (experiment 1)
+2026-11-14 00:17:14,634 | INFO    | training | Trained popularity run_id=e323318e202241e598c54b35d3a7483e fit=0.0s train_rmse=1.0089
+2026-11-14 00:17:14,875 | INFO    | training | Trained item_knn   run_id=38e6847cc42d468a9100c344e788c10d fit=0.1s train_rmse=0.7557
+2026-11-14 00:17:24,276 | INFO    | training | Trained mf_svd     run_id=2b0e6c99a07d4e9cbdbdad8477b34a5a fit=9.3s train_rmse=0.6620
+2026-11-14 00:17:33,646 | INFO    | training | Trained hybrid     run_id=714e662bcc304bac847a5daba4859e3b fit=9.3s train_rmse=0.6620
+00:17:33.646 | INFO    | Task run 'train_models-315' - Stage 'training' summary: {"stage": "training", "experiment_id": "1", "experiment_name": "movielens-recsys", "tracking_uri": "sqlite:///mlflow.db", "n_train": 80003, "models": {"popularity": {"run_id": "e323318e202241e598c54b35d3a7483e", "model_path": "models/popularity/model.pkl", "fit_time_sec": 0.012, "train_rmse": 1.0089337052717238, "train_mae": 0.8059795971318146}, "item_knn": {"run_id": "38e6847cc42d468a9100c344e788c10d", "model_path": "models/item_knn/model.pkl", "fit_time_sec": 0.104, "train_rmse": 0.7557207199084777, "train_mae": 0.58606177887878}, "mf_svd": {"run_id": "2b0e6c99a07d4e9cbdbdad8477b34a5a", "model_path": "models/mf_svd/model.pkl", "fit_time_sec": 9.311, "train_rmse": 0.66204958
+00:17:33.682 | INFO    | Task run 'train_models-315' - Finished in state Completed()
+00:17:33.711 | INFO    | Task run 'evaluate_models-6ef' - Starting stage 'evaluation' (src.evaluation.evaluate): Ranking and rating metrics on the test split; model comparison report
+2026-11-14 00:17:34,082 | INFO    | evaluation | popularity ndcg@10=0.1340 precision@10=0.1082 rmse=1.0309
+2026-11-14 00:17:34,126 | INFO    | evaluation | item_knn   ndcg@10=0.1190 precision@10=0.1061 rmse=1.0743
+2026-11-14 00:17:34,163 | INFO    | evaluation | mf_svd     ndcg@10=0.1140 precision@10=0.0776 rmse=0.9706
+2026-11-14 00:17:34,232 | INFO    | evaluation | hybrid     ndcg@10=0.1533 precision@10=0.0939 rmse=0.9706
+2026-11-14 00:17:34,429 | INFO    | evaluation | Evaluation complete: 98 ranking users, best hybrid by ndcg@10
+00:17:34.429 | INFO    | Task run 'evaluate_models-6ef' - Stage 'evaluation' summary: {"stage": "evaluation", "n_ranking_users": 98, "n_cold_test_users": 192, "primary_metric": "ndcg@10", "best_model": "hybrid", "scores": {"popularity": 0.134025, "item_knn": 0.119038, "mf_svd": 0.114041, "hybrid": 0.153337}, "artifacts": {"comparison_csv": "reports/model_comparison.csv", "comparison_md": "reports/model_comparison.md", "results_json": "reports/evaluation_results.json", "ranking_figure": "reports/figures/model_comparison_ranking.png", "rating_figure": "reports/figures/model_comparison_rating.png"}}
+00:17:34.455 | INFO    | Task run 'evaluate_models-6ef' - Finished in state Completed()
+00:17:34.604 | INFO    | Flow run 'certain-roadrunner' - Run summary written to reports/pipeline_run_summary.json
+00:17:34.614 | INFO    | Flow run 'certain-roadrunner' - Finished in state Completed()
+00:17:34.621 | INFO    | prefect - Stopping temporary server on http://127.0.0.1:8431

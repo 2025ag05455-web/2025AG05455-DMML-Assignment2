@@ -1,0 +1,309 @@
+{
+  "pipeline": "recommendation-pipeline",
+  "orchestrator": "prefect",
+  "flow_run_id": "9fe68b2f-f23a-452f-85e2-ccd8f1b200c3",
+  "status": "success",
+  "failed_stage": null,
+  "started_at_utc": "2026-11-14T07:15:24+00:00",
+  "finished_at_utc": "2026-11-14T07:15:37+00:00",
+  "duration_sec": 13.229,
+  "stages": [
+    {
+      "name": "ingestion",
+      "module": "src.ingestion.ingest",
+      "task_name": "ingest_data",
+      "upstream": [],
+      "status": "success",
+      "started_at_utc": "2026-11-14T07:15:24+00:00",
+      "finished_at_utc": "2026-11-14T07:15:24+00:00",
+      "duration_sec": 0.253,
+      "summary": {
+        "stage": "ingestion",
+        "rows": {
+          "users": 946,
+          "items": 1684,
+          "interactions": 100071
+        },
+        "anomalies_injected": {
+          "interactions": {
+            "exact_duplicate": 25,
+            "rating_out_of_range": 10,
+            "rating_wrong_type": 6,
+            "missing_key": 10,
+            "invalid_timestamp": 10,
+            "orphan_user": 5,
+            "orphan_item": 5
+          },
+          "users": {
+            "missing_age": 5,
+            "invalid_age": 3,
+            "invalid_gender": 2,
+            "exact_duplicate": 3
+          },
+          "items": {
+            "missing_title": 2,
+            "invalid_release_date": 2,
+            "exact_duplicate": 2
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "name": "validation",
+      "module": "src.validation.validate",
+      "task_name": "validate_data",
+      "upstream": [
+        "ingestion"
+      ],
+      "status": "success",
+      "started_at_utc": "2026-11-14T07:15:24+00:00",
+      "finished_at_utc": "2026-11-14T07:15:25+00:00",
+      "duration_sec": 0.868,
+      "summary": {
+        "stage": "validation",
+        "status": "passed",
+        "rows_in": {
+          "users": 946,
+          "items": 1684,
+          "interactions": 100071
+        },
+        "rows_out": {
+          "users": 943,
+          "items": 1682,
+          "interactions": 100000
+        },
+        "rejected_rows": {
+          "users": 3,
+          "items": 2,
+          "interactions": 71
+        },
+        "warning_rows": {
+          "users": 10,
+          "items": 7,
+          "interactions": 0
+        },
+        "interaction_hard_error_rate": 0.000709,
+        "ground_truth_recall": 1.0,
+        "outputs": {
+          "users": "data/interim/users.parquet",
+          "items": "data/interim/items.parquet",
+          "interactions": "data/interim/interactions.parquet"
+        },
+        "reports": {
+          "json": "reports/validation_report.json",
+          "md": "reports/validation_report.md"
+        }
+      },
+      "error": null
+    },
+    {
+      "name": "preparation",
+      "module": "src.preparation.prepare",
+      "task_name": "prepare_data",
+      "upstream": [
+        "validation"
+      ],
+      "status": "success",
+      "started_at_utc": "2026-11-14T07:15:25+00:00",
+      "finished_at_utc": "2026-11-14T07:15:25+00:00",
+      "duration_sec": 0.121,
+      "summary": {
+        "stage": "preparation",
+        "rows": {
+          "users_clean": 943,
+          "items_clean": 1682,
+          "interactions_clean": 100000,
+          "train": 80003,
+          "test": 19997
+        },
+        "age_imputed": 8,
+        "duplicates_resolved": 0,
+        "split": {
+          "cutoff_timestamp": 889237269,
+          "cutoff_time_utc": "1998-03-07T02:21:09+00:00",
+          "n_train": 80003,
+          "n_test": 19997,
+          "n_warm_test_users": 109,
+          "n_cold_test_users": 192,
+          "n_cold_test_items": 66
+        }
+      },
+      "error": null
+    },
+    {
+      "name": "transformation",
+      "module": "src.transformation.transform",
+      "task_name": "transform_data",
+      "upstream": [
+        "preparation"
+      ],
+      "status": "success",
+      "started_at_utc": "2026-11-14T07:15:25+00:00",
+      "finished_at_utc": "2026-11-14T07:15:25+00:00",
+      "duration_sec": 0.21,
+      "summary": {
+        "stage": "transformation",
+        "rows": {
+          "user_activity_summary": 751,
+          "item_popularity": 1616,
+          "genre_popularity": 19
+        },
+        "global_mean_rating": 3.517593,
+        "matrix": {
+          "shape": [
+            943,
+            1682
+          ],
+          "nnz": 80003,
+          "density": 0.050439,
+          "sparsity": 0.949561,
+          "empty_rows": 192,
+          "empty_cols": 66
+        },
+        "top_genres_by_ratings": [
+          "drama",
+          "comedy",
+          "action"
+        ]
+      },
+      "error": null
+    },
+    {
+      "name": "features",
+      "module": "src.features.build_features",
+      "task_name": "build_features",
+      "upstream": [
+        "preparation",
+        "transformation"
+      ],
+      "status": "success",
+      "started_at_utc": "2026-11-14T07:15:25+00:00",
+      "finished_at_utc": "2026-11-14T07:15:25+00:00",
+      "duration_sec": 0.113,
+      "summary": {
+        "stage": "features",
+        "version": "v1",
+        "as_of": "1998-03-07T02:21:09+00:00",
+        "rows": {
+          "user_features": 943,
+          "item_features": 1682,
+          "user_genre_affinity": 943
+        },
+        "n_features": {
+          "user_features": 13,
+          "item_features": 29,
+          "user_genre_affinity": 19,
+          "on_demand": 3
+        },
+        "n_cold_users": 192,
+        "n_cold_items": 66,
+        "catalog": "reports/feature_catalog.md"
+      },
+      "error": null
+    },
+    {
+      "name": "training",
+      "module": "src.training.train",
+      "task_name": "train_models",
+      "upstream": [
+        "preparation",
+        "features"
+      ],
+      "status": "success",
+      "started_at_utc": "2026-11-14T07:15:25+00:00",
+      "finished_at_utc": "2026-11-14T07:15:36+00:00",
+      "duration_sec": 10.891,
+      "summary": {
+        "stage": "training",
+        "experiment_id": "1",
+        "experiment_name": "movielens-recsys",
+        "tracking_uri": "sqlite:///mlflow.db",
+        "n_train": 80003,
+        "models": {
+          "popularity": {
+            "run_id": "9b58e3f010e1417dace0b115ade1ba84",
+            "model_path": "models/popularity/model.pkl",
+            "fit_time_sec": 0.018,
+            "train_rmse": 1.0089337052717238,
+            "train_mae": 0.8059795971318146
+          },
+          "item_knn": {
+            "run_id": "73066ed4f9b94ed68a7f9424d77f360d",
+            "model_path": "models/item_knn/model.pkl",
+            "fit_time_sec": 0.115,
+            "train_rmse": 0.7557207199084777,
+            "train_mae": 0.58606177887878
+          },
+          "mf_svd": {
+            "run_id": "5e25fc30776e41598f8d85a803e1c599",
+            "model_path": "models/mf_svd/model.pkl",
+            "fit_time_sec": 9.193,
+            "train_rmse": 0.6620495889461885,
+            "train_mae": 0.5254155697612188
+          },
+          "hybrid": {
+            "run_id": "42e54a0ed799411c9a33c33a8a6c2758",
+            "model_path": "models/hybrid/model.pkl",
+            "fit_time_sec": 0.016,
+            "train_rmse": 0.6620495889461885,
+            "train_mae": 0.5254155697612188
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "name": "evaluation",
+      "module": "src.evaluation.evaluate",
+      "task_name": "evaluate_models",
+      "upstream": [
+        "preparation",
+        "training"
+      ],
+      "status": "success",
+      "started_at_utc": "2026-11-14T07:15:36+00:00",
+      "finished_at_utc": "2026-11-14T07:15:37+00:00",
+      "duration_sec": 0.771,
+      "summary": {
+        "stage": "evaluation",
+        "n_ranking_users": 98,
+        "n_cold_test_users": 192,
+        "primary_metric": "ndcg@10",
+        "best_model": "hybrid",
+        "scores": {
+          "popularity": 0.134025,
+          "item_knn": 0.119038,
+          "mf_svd": 0.114041,
+          "hybrid": 0.153337
+        },
+        "artifacts": {
+          "comparison_csv": "reports/model_comparison.csv",
+          "comparison_md": "reports/model_comparison.md",
+          "results_json": "reports/evaluation_results.json",
+          "ranking_figure": "reports/figures/model_comparison_ranking.png",
+          "rating_figure": "reports/figures/model_comparison_rating.png"
+        }
+      },
+      "error": null
+    }
+  ],
+  "reproducibility": {
+    "seed": 42,
+    "config_path": "configs/config.yaml",
+    "config_sha256": "e79ad69a1c5578c00358deff2e8966aa847a5d75fcc7efdc3e83825ba734c992",
+    "git_commit": null,
+    "python": "3.11.13",
+    "platform": "macOS-26.7.3-arm64-arm-64bit",
+    "packages": {
+      "numpy": "2.0.2",
+      "pandas": "2.2.3",
+      "pyarrow": "19.0.1",
+      "scipy": "1.17.1",
+      "scikit-learn": "1.9.1",
+      "pandera": "0.23.1",
+      "mlflow": "2.22.5",
+      "prefect": "3.4.25"
+    }
+  }
+}

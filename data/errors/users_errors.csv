@@ -1,0 +1,14 @@
+source_row,user_id,age,gender,occupation,zip_code,error_type,error_column,error_detail,severity
+46,47,53,X,marketing,07102,gender_not_allowed,gender,"gender=X: gender not in allowed_genders ['M', 'F']",warning
+169,170,53,,healthcare,30067,missing_value,gender,gender is missing (raw value ''),warning
+179,180,-5,F,administrator,60202,age_out_of_range,age,"age=-5: age outside [5, 100]",warning
+229,230,,F,student,14476,missing_value,age,age is missing (raw value ''),warning
+354,355,,M,student,60135,missing_value,age,age is missing (raw value ''),warning
+518,519,150,M,other,55320,age_out_of_range,age,"age=150: age outside [5, 100]",warning
+701,702,,M,other,89104,missing_value,age,age is missing (raw value ''),warning
+832,833,,M,writer,90019,missing_value,age,age is missing (raw value ''),warning
+868,869,abc,M,student,10025,invalid_type,age,age='abc' is not numeric,warning
+914,915,,M,entertainment,60614,missing_value,age,age is missing (raw value ''),warning
+943,672,54,F,administrator,90095,exact_duplicate,*,exact duplicate of source_row 671,error
+944,36,19,F,student,93117,exact_duplicate,*,exact duplicate of source_row 35,error
+945,915,,M,entertainment,60614,exact_duplicate,*,exact duplicate of source_row 914,error

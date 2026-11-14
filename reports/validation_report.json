@@ -1,0 +1,2144 @@
+{
+  "stage": "validation",
+  "status": "passed",
+  "run_timestamp_utc": "2026-11-14T07:15:24+00:00",
+  "duration_sec": 0.72,
+  "config": {
+    "file": "configs/config.yaml",
+    "validation": {
+      "rating_min": 1,
+      "rating_max": 5,
+      "allowed_ratings": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "min_timestamp": "1995-01-01T00:00:00Z",
+      "max_timestamp": "2000-12-31T23:59:59Z",
+      "age_min": 5,
+      "age_max": 100,
+      "allowed_genders": [
+        "M",
+        "F"
+      ],
+      "max_error_rate": 0.05
+    }
+  },
+  "inputs": {
+    "users": {
+      "file": "data/raw/users.csv",
+      "rows": 946,
+      "sha256": "e6daf7243b102aae79ae81d30cd7910a9f8510bbc251262d8211a867b15f0974"
+    },
+    "items": {
+      "file": "data/raw/items.csv",
+      "rows": 1684,
+      "sha256": "cbe37c6e7ed95e1202e3eefa23d6c5fc0fe2f33d0938f74d3e01867236f8fc39"
+    },
+    "interactions": {
+      "file": "data/raw/interactions.csv",
+      "rows": 100071,
+      "sha256": "fdc17110e952931d68667793a462da91561ef76eedcacc3821870cb3c85fb1c1"
+    }
+  },
+  "outputs": {
+    "interim": {
+      "users": {
+        "file": "data/interim/users.parquet",
+        "rows": 943,
+        "dtypes": {
+          "user_id": "int64",
+          "age": "Int64",
+          "gender": "string",
+          "occupation": "string",
+          "zip_code": "string"
+        }
+      },
+      "items": {
+        "file": "data/interim/items.parquet",
+        "rows": 1682,
+        "dtypes": {
+          "item_id": "int64",
+          "title": "string",
+          "release_date": "datetime64[ns]",
+          "imdb_url": "string",
+          "genre_unknown": "int8",
+          "genre_action": "int8",
+          "genre_adventure": "int8",
+          "genre_animation": "int8",
+          "genre_childrens": "int8",
+          "genre_comedy": "int8",
+          "genre_crime": "int8",
+          "genre_documentary": "int8",
+          "genre_drama": "int8",
+          "genre_fantasy": "int8",
+          "genre_film_noir": "int8",
+          "genre_horror": "int8",
+          "genre_musical": "int8",
+          "genre_mystery": "int8",
+          "genre_romance": "int8",
+          "genre_sci_fi": "int8",
+          "genre_thriller": "int8",
+          "genre_war": "int8",
+          "genre_western": "int8"
+        }
+      },
+      "interactions": {
+        "file": "data/interim/interactions.parquet",
+        "rows": 100000,
+        "dtypes": {
+          "user_id": "int64",
+          "item_id": "int64",
+          "rating": "int64",
+          "timestamp": "int64"
+        }
+      }
+    },
+    "errors": {
+      "users": {
+        "file": "data/errors/users_errors.csv",
+        "records": 13,
+        "errors": 3,
+        "warnings": 10
+      },
+      "items": {
+        "file": "data/errors/items_errors.csv",
+        "records": 10,
+        "errors": 2,
+        "warnings": 8
+      },
+      "interactions": {
+        "file": "data/errors/interactions_errors.csv",
+        "records": 71,
+        "errors": 71,
+        "warnings": 0
+      }
+    }
+  },
+  "summary": {
+    "users": {
+      "input_rows": 946,
+      "exact_duplicates": 3,
+      "rejected_rows": 3,
+      "output_rows": 943,
+      "rows_with_warnings": 10,
+      "error_records": 3,
+      "warning_records": 10,
+      "hard_error_rate_pct": 0.3171,
+      "dropped_columns": []
+    },
+    "items": {
+      "input_rows": 1684,
+      "exact_duplicates": 2,
+      "rejected_rows": 2,
+      "output_rows": 1682,
+      "rows_with_warnings": 7,
+      "error_records": 2,
+      "warning_records": 8,
+      "hard_error_rate_pct": 0.1188,
+      "dropped_columns": [
+        "video_release_date"
+      ]
+    },
+    "interactions": {
+      "input_rows": 100071,
+      "exact_duplicates": 25,
+      "rejected_rows": 71,
+      "output_rows": 100000,
+      "rows_with_warnings": 0,
+      "error_records": 71,
+      "warning_records": 0,
+      "hard_error_rate_pct": 0.0709,
+      "dropped_columns": []
+    }
+  },
+  "quality_gate": {
+    "entity": "interactions",
+    "metric": "hard_error_rate",
+    "value": 0.000709,
+    "threshold": 0.05,
+    "n_rejected": 71,
+    "n_input": 100071,
+    "passed": true
+  },
+  "post_condition_gate": {
+    "users": {
+      "schema": "users_contract",
+      "rows": 943,
+      "passed": true
+    },
+    "items": {
+      "schema": "items_contract",
+      "rows": 1682,
+      "passed": true
+    },
+    "interactions": {
+      "schema": "interactions_contract",
+      "rows": 100000,
+      "passed": true
+    }
+  },
+  "policy": {
+    "hard_errors": {
+      "severity": "error",
+      "action": "row rejected",
+      "problems": "missing / non-numeric / non-integer key, duplicate primary key, missing / non-numeric / non-integer / not-allowed rating, missing / non-numeric / out-of-window timestamp, orphan foreign key (not in validated users / items), genre flag missing or not 0/1"
+    },
+    "exact_duplicates": {
+      "severity": "error",
+      "action": "row quarantined (first occurrence kept)"
+    },
+    "soft_warnings": {
+      "severity": "warning",
+      "action": "row kept, value set to null",
+      "problems": "missing / non-numeric / out-of-range age, missing or not-allowed gender, missing occupation or zip_code, missing title, missing or unparsable release_date, missing imdb_url",
+      "note": "nulled attributes are imputed by the preparation stage"
+    },
+    "duplicate_interactions": {
+      "severity": "warning",
+      "action": "row kept, resolved in preparation",
+      "note": "preparation keeps one row per (user_id, item_id)"
+    },
+    "null_tokens": [
+      "",
+      "n/a",
+      "na",
+      "nan",
+      "none",
+      "null"
+    ],
+    "null_token_exemptions": {
+      "occupation": [
+        "none"
+      ]
+    },
+    "quality_gate": "stage fails if interaction hard-error rate > 0.05",
+    "post_condition_gate": "strict Pandera contract schema + exact dtype comparison on every output",
+    "error_file_columns": "source_row (0-based data row; CSV line = source_row + 2), raw columns, error_type, error_column, error_detail, severity",
+    "check_order": [
+      "structure: all contract columns present (abort otherwise)",
+      "normalise: strip whitespace, null tokens -> null",
+      "exact duplicates quarantined (first occurrence kept); later checks run on unique rows",
+      "missing values per column",
+      "type coercion: non-numeric / non-integer numbers, unparsable dates (custom, vectorised)",
+      "Pandera diagnostic schema (lazy): ranges, allowed values, key uniqueness, foreign keys",
+      "policy: reject rows with hard errors, null soft-failed attributes",
+      "duplicate (user_id, item_id) pairs among kept rows (warning)",
+      "Pandera contract schema + exact dtype comparison on the clean output (post-condition gate)"
+    ]
+  },
+  "checks": [
+    {
+      "entity": "users",
+      "check": "required_columns",
+      "column": "*",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 5,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "stage aborted",
+      "rule": "all contract columns are present in the raw file"
+    },
+    {
+      "entity": "users",
+      "check": "exact_duplicate",
+      "column": "*",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 946,
+      "n_failed": 3,
+      "pct_failed": 0.3171,
+      "action": "row quarantined (first occurrence kept)",
+      "rule": "row is an exact copy of an earlier row"
+    },
+    {
+      "entity": "users",
+      "check": "missing_value",
+      "column": "user_id",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 943,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value is empty or a null token (NA, N/A, null, None, nan)"
+    },
+    {
+      "entity": "users",
+      "check": "missing_value",
+      "column": "age",
+      "severity": "warning",
+      "method": "custom",
+      "n_checked": 943,
+      "n_failed": 5,
+      "pct_failed": 0.5302,
+      "action": "row kept, value set to null",
+      "rule": "value is empty or a null token (NA, N/A, null, None, nan)"
+    },
+    {
+      "entity": "users",
+      "check": "missing_value",
+      "column": "gender",
+      "severity": "warning",
+      "method": "custom",
+      "n_checked": 943,
+      "n_failed": 1,
+      "pct_failed": 0.106,
+      "action": "row kept, value set to null",
+      "rule": "value is empty or a null token (NA, N/A, null, None, nan)"
+    },
+    {
+      "entity": "users",
+      "check": "missing_value",
+      "column": "occupation",
+      "severity": "warning",
+      "method": "custom",
+      "n_checked": 943,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row kept, value set to null",
+      "rule": "value is empty or a null token (NA, N/A, null, None, nan)"
+    },
+    {
+      "entity": "users",
+      "check": "missing_value",
+      "column": "zip_code",
+      "severity": "warning",
+      "method": "custom",
+      "n_checked": 943,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row kept, value set to null",
+      "rule": "value is empty or a null token (NA, N/A, null, None, nan)"
+    },
+    {
+      "entity": "users",
+      "check": "invalid_type",
+      "column": "user_id",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 943,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value cannot be parsed to the contract type"
+    },
+    {
+      "entity": "users",
+      "check": "non_integer_value",
+      "column": "user_id",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 943,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "numeric value has a fractional part where an integer is required"
+    },
+    {
+      "entity": "users",
+      "check": "invalid_type",
+      "column": "age",
+      "severity": "warning",
+      "method": "custom",
+      "n_checked": 943,
+      "n_failed": 1,
+      "pct_failed": 0.106,
+      "action": "row kept, value set to null",
+      "rule": "value cannot be parsed to the contract type"
+    },
+    {
+      "entity": "users",
+      "check": "non_integer_value",
+      "column": "age",
+      "severity": "warning",
+      "method": "custom",
+      "n_checked": 943,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row kept, value set to null",
+      "rule": "numeric value has a fractional part where an integer is required"
+    },
+    {
+      "entity": "users",
+      "check": "duplicate_key",
+      "column": "user_id",
+      "severity": "error",
+      "method": "pandera",
+      "n_checked": 943,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "primary key occurs more than once (first occurrence kept)"
+    },
+    {
+      "entity": "users",
+      "check": "age_out_of_range",
+      "column": "age",
+      "severity": "warning",
+      "method": "pandera",
+      "n_checked": 943,
+      "n_failed": 2,
+      "pct_failed": 0.2121,
+      "action": "row kept, value set to null",
+      "rule": "age outside [5, 100]"
+    },
+    {
+      "entity": "users",
+      "check": "gender_not_allowed",
+      "column": "gender",
+      "severity": "warning",
+      "method": "pandera",
+      "n_checked": 943,
+      "n_failed": 1,
+      "pct_failed": 0.106,
+      "action": "row kept, value set to null",
+      "rule": "gender not in allowed_genders ['M', 'F']"
+    },
+    {
+      "entity": "items",
+      "check": "required_columns",
+      "column": "*",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 24,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "stage aborted",
+      "rule": "all contract columns are present in the raw file"
+    },
+    {
+      "entity": "items",
+      "check": "exact_duplicate",
+      "column": "*",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1684,
+      "n_failed": 2,
+      "pct_failed": 0.1188,
+      "action": "row quarantined (first occurrence kept)",
+      "rule": "row is an exact copy of an earlier row"
+    },
+    {
+      "entity": "items",
+      "check": "missing_value",
+      "column": "item_id",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value is empty or a null token (NA, N/A, null, None, nan)"
+    },
+    {
+      "entity": "items",
+      "check": "missing_value",
+      "column": "title",
+      "severity": "warning",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 2,
+      "pct_failed": 0.1189,
+      "action": "row kept, value set to null",
+      "rule": "value is empty or a null token (NA, N/A, null, None, nan)"
+    },
+    {
+      "entity": "items",
+      "check": "missing_value",
+      "column": "release_date",
+      "severity": "warning",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 1,
+      "pct_failed": 0.0595,
+      "action": "row kept, value set to null",
+      "rule": "value is empty or a null token (NA, N/A, null, None, nan)"
+    },
+    {
+      "entity": "items",
+      "check": "missing_value",
+      "column": "imdb_url",
+      "severity": "warning",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 3,
+      "pct_failed": 0.1784,
+      "action": "row kept, value set to null",
+      "rule": "value is empty or a null token (NA, N/A, null, None, nan)"
+    },
+    {
+      "entity": "items",
+      "check": "missing_value",
+      "column": "genre_unknown",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value is empty or a null token (NA, N/A, null, None, nan)"
+    },
+    {
+      "entity": "items",
+      "check": "missing_value",
+      "column": "genre_action",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value is empty or a null token (NA, N/A, null, None, nan)"
+    },
+    {
+      "entity": "items",
+      "check": "missing_value",
+      "column": "genre_adventure",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value is empty or a null token (NA, N/A, null, None, nan)"
+    },
+    {
+      "entity": "items",
+      "check": "missing_value",
+      "column": "genre_animation",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value is empty or a null token (NA, N/A, null, None, nan)"
+    },
+    {
+      "entity": "items",
+      "check": "missing_value",
+      "column": "genre_childrens",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value is empty or a null token (NA, N/A, null, None, nan)"
+    },
+    {
+      "entity": "items",
+      "check": "missing_value",
+      "column": "genre_comedy",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value is empty or a null token (NA, N/A, null, None, nan)"
+    },
+    {
+      "entity": "items",
+      "check": "missing_value",
+      "column": "genre_crime",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value is empty or a null token (NA, N/A, null, None, nan)"
+    },
+    {
+      "entity": "items",
+      "check": "missing_value",
+      "column": "genre_documentary",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value is empty or a null token (NA, N/A, null, None, nan)"
+    },
+    {
+      "entity": "items",
+      "check": "missing_value",
+      "column": "genre_drama",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value is empty or a null token (NA, N/A, null, None, nan)"
+    },
+    {
+      "entity": "items",
+      "check": "missing_value",
+      "column": "genre_fantasy",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value is empty or a null token (NA, N/A, null, None, nan)"
+    },
+    {
+      "entity": "items",
+      "check": "missing_value",
+      "column": "genre_film_noir",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value is empty or a null token (NA, N/A, null, None, nan)"
+    },
+    {
+      "entity": "items",
+      "check": "missing_value",
+      "column": "genre_horror",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value is empty or a null token (NA, N/A, null, None, nan)"
+    },
+    {
+      "entity": "items",
+      "check": "missing_value",
+      "column": "genre_musical",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value is empty or a null token (NA, N/A, null, None, nan)"
+    },
+    {
+      "entity": "items",
+      "check": "missing_value",
+      "column": "genre_mystery",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value is empty or a null token (NA, N/A, null, None, nan)"
+    },
+    {
+      "entity": "items",
+      "check": "missing_value",
+      "column": "genre_romance",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value is empty or a null token (NA, N/A, null, None, nan)"
+    },
+    {
+      "entity": "items",
+      "check": "missing_value",
+      "column": "genre_sci_fi",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value is empty or a null token (NA, N/A, null, None, nan)"
+    },
+    {
+      "entity": "items",
+      "check": "missing_value",
+      "column": "genre_thriller",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value is empty or a null token (NA, N/A, null, None, nan)"
+    },
+    {
+      "entity": "items",
+      "check": "missing_value",
+      "column": "genre_war",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value is empty or a null token (NA, N/A, null, None, nan)"
+    },
+    {
+      "entity": "items",
+      "check": "missing_value",
+      "column": "genre_western",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value is empty or a null token (NA, N/A, null, None, nan)"
+    },
+    {
+      "entity": "items",
+      "check": "invalid_type",
+      "column": "item_id",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value cannot be parsed to the contract type"
+    },
+    {
+      "entity": "items",
+      "check": "non_integer_value",
+      "column": "item_id",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "numeric value has a fractional part where an integer is required"
+    },
+    {
+      "entity": "items",
+      "check": "invalid_type",
+      "column": "release_date",
+      "severity": "warning",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 2,
+      "pct_failed": 0.1189,
+      "action": "row kept, value set to null",
+      "rule": "value cannot be parsed to the contract type"
+    },
+    {
+      "entity": "items",
+      "check": "invalid_type",
+      "column": "genre_unknown",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value cannot be parsed to the contract type"
+    },
+    {
+      "entity": "items",
+      "check": "non_integer_value",
+      "column": "genre_unknown",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "numeric value has a fractional part where an integer is required"
+    },
+    {
+      "entity": "items",
+      "check": "invalid_type",
+      "column": "genre_action",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value cannot be parsed to the contract type"
+    },
+    {
+      "entity": "items",
+      "check": "non_integer_value",
+      "column": "genre_action",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "numeric value has a fractional part where an integer is required"
+    },
+    {
+      "entity": "items",
+      "check": "invalid_type",
+      "column": "genre_adventure",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value cannot be parsed to the contract type"
+    },
+    {
+      "entity": "items",
+      "check": "non_integer_value",
+      "column": "genre_adventure",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "numeric value has a fractional part where an integer is required"
+    },
+    {
+      "entity": "items",
+      "check": "invalid_type",
+      "column": "genre_animation",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value cannot be parsed to the contract type"
+    },
+    {
+      "entity": "items",
+      "check": "non_integer_value",
+      "column": "genre_animation",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "numeric value has a fractional part where an integer is required"
+    },
+    {
+      "entity": "items",
+      "check": "invalid_type",
+      "column": "genre_childrens",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value cannot be parsed to the contract type"
+    },
+    {
+      "entity": "items",
+      "check": "non_integer_value",
+      "column": "genre_childrens",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "numeric value has a fractional part where an integer is required"
+    },
+    {
+      "entity": "items",
+      "check": "invalid_type",
+      "column": "genre_comedy",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value cannot be parsed to the contract type"
+    },
+    {
+      "entity": "items",
+      "check": "non_integer_value",
+      "column": "genre_comedy",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "numeric value has a fractional part where an integer is required"
+    },
+    {
+      "entity": "items",
+      "check": "invalid_type",
+      "column": "genre_crime",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value cannot be parsed to the contract type"
+    },
+    {
+      "entity": "items",
+      "check": "non_integer_value",
+      "column": "genre_crime",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "numeric value has a fractional part where an integer is required"
+    },
+    {
+      "entity": "items",
+      "check": "invalid_type",
+      "column": "genre_documentary",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value cannot be parsed to the contract type"
+    },
+    {
+      "entity": "items",
+      "check": "non_integer_value",
+      "column": "genre_documentary",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "numeric value has a fractional part where an integer is required"
+    },
+    {
+      "entity": "items",
+      "check": "invalid_type",
+      "column": "genre_drama",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value cannot be parsed to the contract type"
+    },
+    {
+      "entity": "items",
+      "check": "non_integer_value",
+      "column": "genre_drama",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "numeric value has a fractional part where an integer is required"
+    },
+    {
+      "entity": "items",
+      "check": "invalid_type",
+      "column": "genre_fantasy",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value cannot be parsed to the contract type"
+    },
+    {
+      "entity": "items",
+      "check": "non_integer_value",
+      "column": "genre_fantasy",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "numeric value has a fractional part where an integer is required"
+    },
+    {
+      "entity": "items",
+      "check": "invalid_type",
+      "column": "genre_film_noir",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value cannot be parsed to the contract type"
+    },
+    {
+      "entity": "items",
+      "check": "non_integer_value",
+      "column": "genre_film_noir",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "numeric value has a fractional part where an integer is required"
+    },
+    {
+      "entity": "items",
+      "check": "invalid_type",
+      "column": "genre_horror",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value cannot be parsed to the contract type"
+    },
+    {
+      "entity": "items",
+      "check": "non_integer_value",
+      "column": "genre_horror",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "numeric value has a fractional part where an integer is required"
+    },
+    {
+      "entity": "items",
+      "check": "invalid_type",
+      "column": "genre_musical",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value cannot be parsed to the contract type"
+    },
+    {
+      "entity": "items",
+      "check": "non_integer_value",
+      "column": "genre_musical",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "numeric value has a fractional part where an integer is required"
+    },
+    {
+      "entity": "items",
+      "check": "invalid_type",
+      "column": "genre_mystery",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value cannot be parsed to the contract type"
+    },
+    {
+      "entity": "items",
+      "check": "non_integer_value",
+      "column": "genre_mystery",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "numeric value has a fractional part where an integer is required"
+    },
+    {
+      "entity": "items",
+      "check": "invalid_type",
+      "column": "genre_romance",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value cannot be parsed to the contract type"
+    },
+    {
+      "entity": "items",
+      "check": "non_integer_value",
+      "column": "genre_romance",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "numeric value has a fractional part where an integer is required"
+    },
+    {
+      "entity": "items",
+      "check": "invalid_type",
+      "column": "genre_sci_fi",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value cannot be parsed to the contract type"
+    },
+    {
+      "entity": "items",
+      "check": "non_integer_value",
+      "column": "genre_sci_fi",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "numeric value has a fractional part where an integer is required"
+    },
+    {
+      "entity": "items",
+      "check": "invalid_type",
+      "column": "genre_thriller",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value cannot be parsed to the contract type"
+    },
+    {
+      "entity": "items",
+      "check": "non_integer_value",
+      "column": "genre_thriller",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "numeric value has a fractional part where an integer is required"
+    },
+    {
+      "entity": "items",
+      "check": "invalid_type",
+      "column": "genre_war",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value cannot be parsed to the contract type"
+    },
+    {
+      "entity": "items",
+      "check": "non_integer_value",
+      "column": "genre_war",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "numeric value has a fractional part where an integer is required"
+    },
+    {
+      "entity": "items",
+      "check": "invalid_type",
+      "column": "genre_western",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value cannot be parsed to the contract type"
+    },
+    {
+      "entity": "items",
+      "check": "non_integer_value",
+      "column": "genre_western",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "numeric value has a fractional part where an integer is required"
+    },
+    {
+      "entity": "items",
+      "check": "duplicate_key",
+      "column": "item_id",
+      "severity": "error",
+      "method": "pandera",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "primary key occurs more than once (first occurrence kept)"
+    },
+    {
+      "entity": "items",
+      "check": "genre_flag_not_binary",
+      "column": "genre_unknown",
+      "severity": "error",
+      "method": "pandera",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "genre flag is not 0/1"
+    },
+    {
+      "entity": "items",
+      "check": "genre_flag_not_binary",
+      "column": "genre_action",
+      "severity": "error",
+      "method": "pandera",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "genre flag is not 0/1"
+    },
+    {
+      "entity": "items",
+      "check": "genre_flag_not_binary",
+      "column": "genre_adventure",
+      "severity": "error",
+      "method": "pandera",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "genre flag is not 0/1"
+    },
+    {
+      "entity": "items",
+      "check": "genre_flag_not_binary",
+      "column": "genre_animation",
+      "severity": "error",
+      "method": "pandera",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "genre flag is not 0/1"
+    },
+    {
+      "entity": "items",
+      "check": "genre_flag_not_binary",
+      "column": "genre_childrens",
+      "severity": "error",
+      "method": "pandera",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "genre flag is not 0/1"
+    },
+    {
+      "entity": "items",
+      "check": "genre_flag_not_binary",
+      "column": "genre_comedy",
+      "severity": "error",
+      "method": "pandera",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "genre flag is not 0/1"
+    },
+    {
+      "entity": "items",
+      "check": "genre_flag_not_binary",
+      "column": "genre_crime",
+      "severity": "error",
+      "method": "pandera",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "genre flag is not 0/1"
+    },
+    {
+      "entity": "items",
+      "check": "genre_flag_not_binary",
+      "column": "genre_documentary",
+      "severity": "error",
+      "method": "pandera",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "genre flag is not 0/1"
+    },
+    {
+      "entity": "items",
+      "check": "genre_flag_not_binary",
+      "column": "genre_drama",
+      "severity": "error",
+      "method": "pandera",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "genre flag is not 0/1"
+    },
+    {
+      "entity": "items",
+      "check": "genre_flag_not_binary",
+      "column": "genre_fantasy",
+      "severity": "error",
+      "method": "pandera",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "genre flag is not 0/1"
+    },
+    {
+      "entity": "items",
+      "check": "genre_flag_not_binary",
+      "column": "genre_film_noir",
+      "severity": "error",
+      "method": "pandera",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "genre flag is not 0/1"
+    },
+    {
+      "entity": "items",
+      "check": "genre_flag_not_binary",
+      "column": "genre_horror",
+      "severity": "error",
+      "method": "pandera",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "genre flag is not 0/1"
+    },
+    {
+      "entity": "items",
+      "check": "genre_flag_not_binary",
+      "column": "genre_musical",
+      "severity": "error",
+      "method": "pandera",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "genre flag is not 0/1"
+    },
+    {
+      "entity": "items",
+      "check": "genre_flag_not_binary",
+      "column": "genre_mystery",
+      "severity": "error",
+      "method": "pandera",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "genre flag is not 0/1"
+    },
+    {
+      "entity": "items",
+      "check": "genre_flag_not_binary",
+      "column": "genre_romance",
+      "severity": "error",
+      "method": "pandera",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "genre flag is not 0/1"
+    },
+    {
+      "entity": "items",
+      "check": "genre_flag_not_binary",
+      "column": "genre_sci_fi",
+      "severity": "error",
+      "method": "pandera",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "genre flag is not 0/1"
+    },
+    {
+      "entity": "items",
+      "check": "genre_flag_not_binary",
+      "column": "genre_thriller",
+      "severity": "error",
+      "method": "pandera",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "genre flag is not 0/1"
+    },
+    {
+      "entity": "items",
+      "check": "genre_flag_not_binary",
+      "column": "genre_war",
+      "severity": "error",
+      "method": "pandera",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "genre flag is not 0/1"
+    },
+    {
+      "entity": "items",
+      "check": "genre_flag_not_binary",
+      "column": "genre_western",
+      "severity": "error",
+      "method": "pandera",
+      "n_checked": 1682,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "genre flag is not 0/1"
+    },
+    {
+      "entity": "interactions",
+      "check": "required_columns",
+      "column": "*",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 4,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "stage aborted",
+      "rule": "all contract columns are present in the raw file"
+    },
+    {
+      "entity": "interactions",
+      "check": "exact_duplicate",
+      "column": "*",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 100071,
+      "n_failed": 25,
+      "pct_failed": 0.025,
+      "action": "row quarantined (first occurrence kept)",
+      "rule": "row is an exact copy of an earlier row"
+    },
+    {
+      "entity": "interactions",
+      "check": "missing_value",
+      "column": "user_id",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 100046,
+      "n_failed": 5,
+      "pct_failed": 0.005,
+      "action": "row rejected",
+      "rule": "value is empty or a null token (NA, N/A, null, None, nan)"
+    },
+    {
+      "entity": "interactions",
+      "check": "missing_value",
+      "column": "item_id",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 100046,
+      "n_failed": 5,
+      "pct_failed": 0.005,
+      "action": "row rejected",
+      "rule": "value is empty or a null token (NA, N/A, null, None, nan)"
+    },
+    {
+      "entity": "interactions",
+      "check": "missing_value",
+      "column": "rating",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 100046,
+      "n_failed": 1,
+      "pct_failed": 0.001,
+      "action": "row rejected",
+      "rule": "value is empty or a null token (NA, N/A, null, None, nan)"
+    },
+    {
+      "entity": "interactions",
+      "check": "missing_value",
+      "column": "timestamp",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 100046,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value is empty or a null token (NA, N/A, null, None, nan)"
+    },
+    {
+      "entity": "interactions",
+      "check": "invalid_type",
+      "column": "user_id",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 100046,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value cannot be parsed to the contract type"
+    },
+    {
+      "entity": "interactions",
+      "check": "non_integer_value",
+      "column": "user_id",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 100046,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "numeric value has a fractional part where an integer is required"
+    },
+    {
+      "entity": "interactions",
+      "check": "invalid_type",
+      "column": "item_id",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 100046,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "value cannot be parsed to the contract type"
+    },
+    {
+      "entity": "interactions",
+      "check": "non_integer_value",
+      "column": "item_id",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 100046,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "numeric value has a fractional part where an integer is required"
+    },
+    {
+      "entity": "interactions",
+      "check": "invalid_type",
+      "column": "rating",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 100046,
+      "n_failed": 3,
+      "pct_failed": 0.003,
+      "action": "row rejected",
+      "rule": "value cannot be parsed to the contract type"
+    },
+    {
+      "entity": "interactions",
+      "check": "non_integer_value",
+      "column": "rating",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 100046,
+      "n_failed": 2,
+      "pct_failed": 0.002,
+      "action": "row rejected",
+      "rule": "numeric value has a fractional part where an integer is required"
+    },
+    {
+      "entity": "interactions",
+      "check": "invalid_type",
+      "column": "timestamp",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 100046,
+      "n_failed": 4,
+      "pct_failed": 0.004,
+      "action": "row rejected",
+      "rule": "value cannot be parsed to the contract type"
+    },
+    {
+      "entity": "interactions",
+      "check": "non_integer_value",
+      "column": "timestamp",
+      "severity": "error",
+      "method": "custom",
+      "n_checked": 100046,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row rejected",
+      "rule": "numeric value has a fractional part where an integer is required"
+    },
+    {
+      "entity": "interactions",
+      "check": "referential_integrity",
+      "column": "user_id",
+      "severity": "error",
+      "method": "pandera",
+      "n_checked": 100046,
+      "n_failed": 5,
+      "pct_failed": 0.005,
+      "action": "row rejected",
+      "rule": "foreign key not found in the validated parent table"
+    },
+    {
+      "entity": "interactions",
+      "check": "referential_integrity",
+      "column": "item_id",
+      "severity": "error",
+      "method": "pandera",
+      "n_checked": 100046,
+      "n_failed": 5,
+      "pct_failed": 0.005,
+      "action": "row rejected",
+      "rule": "foreign key not found in the validated parent table"
+    },
+    {
+      "entity": "interactions",
+      "check": "rating_not_allowed",
+      "column": "rating",
+      "severity": "error",
+      "method": "pandera",
+      "n_checked": 100046,
+      "n_failed": 10,
+      "pct_failed": 0.01,
+      "action": "row rejected",
+      "rule": "rating not in allowed_ratings [1, 2, 3, 4, 5]"
+    },
+    {
+      "entity": "interactions",
+      "check": "timestamp_out_of_range",
+      "column": "timestamp",
+      "severity": "error",
+      "method": "pandera",
+      "n_checked": 100046,
+      "n_failed": 6,
+      "pct_failed": 0.006,
+      "action": "row rejected",
+      "rule": "unix timestamp outside [1995-01-01T00:00:00Z, 2000-12-31T23:59:59Z]"
+    },
+    {
+      "entity": "interactions",
+      "check": "duplicate_interaction",
+      "column": "user_id+item_id",
+      "severity": "warning",
+      "method": "custom",
+      "n_checked": 100000,
+      "n_failed": 0,
+      "pct_failed": 0.0,
+      "action": "row kept, resolved in preparation",
+      "rule": "(user_id, item_id) pair occurs more than once"
+    }
+  ],
+  "profile": {
+    "users": {
+      "rows_raw": 946,
+      "rows_validated": 943,
+      "null_pct_raw": {
+        "user_id": 0.0,
+        "age": 0.6342,
+        "gender": 0.1057,
+        "occupation": 0.0,
+        "zip_code": 0.0
+      },
+      "null_pct_validated": {
+        "user_id": 0.0,
+        "age": 0.8484,
+        "gender": 0.2121,
+        "occupation": 0.0,
+        "zip_code": 0.0
+      },
+      "values_with_surrounding_whitespace": {},
+      "null_token_exemptions": {
+        "occupation": {
+          "none": 9
+        }
+      },
+      "n_users": 943,
+      "age": {
+        "min": 7.0,
+        "median": 31.0,
+        "mean": 34.0781,
+        "max": 73.0
+      },
+      "gender_distribution": {
+        "M": 669,
+        "F": 272,
+        "null": 2
+      },
+      "n_occupations": 21
+    },
+    "items": {
+      "rows_raw": 1684,
+      "rows_validated": 1682,
+      "null_pct_raw": {
+        "item_id": 0.0,
+        "title": 0.1188,
+        "release_date": 0.0594,
+        "video_release_date": 100.0,
+        "imdb_url": 0.1781,
+        "genre_unknown": 0.0,
+        "genre_action": 0.0,
+        "genre_adventure": 0.0,
+        "genre_animation": 0.0,
+        "genre_childrens": 0.0,
+        "genre_comedy": 0.0,
+        "genre_crime": 0.0,
+        "genre_documentary": 0.0,
+        "genre_drama": 0.0,
+        "genre_fantasy": 0.0,
+        "genre_film_noir": 0.0,
+        "genre_horror": 0.0,
+        "genre_musical": 0.0,
+        "genre_mystery": 0.0,
+        "genre_romance": 0.0,
+        "genre_sci_fi": 0.0,
+        "genre_thriller": 0.0,
+        "genre_war": 0.0,
+        "genre_western": 0.0
+      },
+      "null_pct_validated": {
+        "item_id": 0.0,
+        "title": 0.1189,
+        "release_date": 0.1784,
+        "imdb_url": 0.1784,
+        "genre_unknown": 0.0,
+        "genre_action": 0.0,
+        "genre_adventure": 0.0,
+        "genre_animation": 0.0,
+        "genre_childrens": 0.0,
+        "genre_comedy": 0.0,
+        "genre_crime": 0.0,
+        "genre_documentary": 0.0,
+        "genre_drama": 0.0,
+        "genre_fantasy": 0.0,
+        "genre_film_noir": 0.0,
+        "genre_horror": 0.0,
+        "genre_musical": 0.0,
+        "genre_mystery": 0.0,
+        "genre_romance": 0.0,
+        "genre_sci_fi": 0.0,
+        "genre_thriller": 0.0,
+        "genre_war": 0.0,
+        "genre_western": 0.0
+      },
+      "values_with_surrounding_whitespace": {
+        "title": 3
+      },
+      "null_token_exemptions": {},
+      "n_items": 1682,
+      "release_date_range": {
+        "min": "1922-01-01",
+        "max": "1998-10-23"
+      },
+      "duplicate_titles": 18,
+      "items_per_genre": {
+        "unknown": 2,
+        "action": 251,
+        "adventure": 135,
+        "animation": 42,
+        "childrens": 122,
+        "comedy": 505,
+        "crime": 109,
+        "documentary": 50,
+        "drama": 725,
+        "fantasy": 22,
+        "film_noir": 24,
+        "horror": 92,
+        "musical": 56,
+        "mystery": 61,
+        "romance": 247,
+        "sci_fi": 101,
+        "thriller": 251,
+        "war": 71,
+        "western": 27
+      },
+      "multi_genre_pct": 50.48
+    },
+    "interactions": {
+      "rows_raw": 100071,
+      "rows_validated": 100000,
+      "null_pct_raw": {
+        "user_id": 0.005,
+        "item_id": 0.005,
+        "rating": 0.001,
+        "timestamp": 0.0
+      },
+      "null_pct_validated": {
+        "user_id": 0.0,
+        "item_id": 0.0,
+        "rating": 0.0,
+        "timestamp": 0.0
+      },
+      "values_with_surrounding_whitespace": {},
+      "null_token_exemptions": {},
+      "n_interactions": 100000,
+      "n_users": 943,
+      "n_items": 1682,
+      "density_pct": 6.3047,
+      "rating_distribution": {
+        "1": {
+          "count": 6110,
+          "pct": 6.11
+        },
+        "2": {
+          "count": 11370,
+          "pct": 11.37
+        },
+        "3": {
+          "count": 27145,
+          "pct": 27.14
+        },
+        "4": {
+          "count": 34174,
+          "pct": 34.17
+        },
+        "5": {
+          "count": 21201,
+          "pct": 21.2
+        }
+      },
+      "rating_mean": 3.5299,
+      "rating_std": 1.1257,
+      "timestamp_range": {
+        "min": 874724710,
+        "max": 893286638,
+        "min_utc": "1997-09-20T03:05:10+00:00",
+        "max_utc": "1998-04-22T23:10:38+00:00",
+        "span_days": 214.8
+      },
+      "ratings_per_user": {
+        "min": 20.0,
+        "median": 65.0,
+        "mean": 106.0445,
+        "max": 737.0
+      },
+      "ratings_per_item": {
+        "min": 1.0,
+        "median": 27.0,
+        "mean": 59.453,
+        "max": 583.0
+      }
+    }
+  },
+  "ground_truth": {
+    "available": true,
+    "source": "data/raw/injected_anomalies.json",
+    "categories": [
+      {
+        "entity": "interactions",
+        "category": "exact_duplicate",
+        "severity": "error",
+        "expected": 25,
+        "detected": 25,
+        "recall": 1.0,
+        "detected_by": {
+          "exact_duplicate[*]": 25
+        },
+        "mapped_checks": [
+          "exact_duplicate[*]"
+        ]
+      },
+      {
+        "entity": "interactions",
+        "category": "rating_out_of_range",
+        "severity": "error",
+        "expected": 10,
+        "detected": 10,
+        "recall": 1.0,
+        "detected_by": {
+          "rating_not_allowed[rating]": 10
+        },
+        "mapped_checks": [
+          "rating_not_allowed[rating]"
+        ]
+      },
+      {
+        "entity": "interactions",
+        "category": "rating_wrong_type",
+        "severity": "error",
+        "expected": 6,
+        "detected": 6,
+        "recall": 1.0,
+        "detected_by": {
+          "invalid_type[rating]": 3,
+          "missing_value[rating]": 1,
+          "non_integer_value[rating]": 2
+        },
+        "mapped_checks": [
+          "invalid_type[rating]",
+          "non_integer_value[rating]",
+          "missing_value[rating]"
+        ]
+      },
+      {
+        "entity": "interactions",
+        "category": "missing_key",
+        "severity": "error",
+        "expected": 10,
+        "detected": 10,
+        "recall": 1.0,
+        "detected_by": {
+          "missing_value[item_id]": 5,
+          "missing_value[user_id]": 5
+        },
+        "mapped_checks": [
+          "missing_value[user_id]",
+          "missing_value[item_id]"
+        ]
+      },
+      {
+        "entity": "interactions",
+        "category": "invalid_timestamp",
+        "severity": "error",
+        "expected": 10,
+        "detected": 10,
+        "recall": 1.0,
+        "detected_by": {
+          "invalid_type[timestamp]": 4,
+          "timestamp_out_of_range[timestamp]": 6
+        },
+        "mapped_checks": [
+          "invalid_type[timestamp]",
+          "non_integer_value[timestamp]",
+          "timestamp_out_of_range[timestamp]",
+          "missing_value[timestamp]"
+        ]
+      },
+      {
+        "entity": "interactions",
+        "category": "orphan_user",
+        "severity": "error",
+        "expected": 5,
+        "detected": 5,
+        "recall": 1.0,
+        "detected_by": {
+          "referential_integrity[user_id]": 5
+        },
+        "mapped_checks": [
+          "referential_integrity[user_id]"
+        ]
+      },
+      {
+        "entity": "interactions",
+        "category": "orphan_item",
+        "severity": "error",
+        "expected": 5,
+        "detected": 5,
+        "recall": 1.0,
+        "detected_by": {
+          "referential_integrity[item_id]": 5
+        },
+        "mapped_checks": [
+          "referential_integrity[item_id]"
+        ]
+      },
+      {
+        "entity": "users",
+        "category": "missing_age",
+        "severity": "warning",
+        "expected": 5,
+        "detected": 5,
+        "recall": 1.0,
+        "detected_by": {
+          "missing_value[age]": 5
+        },
+        "mapped_checks": [
+          "missing_value[age]"
+        ]
+      },
+      {
+        "entity": "users",
+        "category": "invalid_age",
+        "severity": "warning",
+        "expected": 3,
+        "detected": 3,
+        "recall": 1.0,
+        "detected_by": {
+          "age_out_of_range[age]": 2,
+          "invalid_type[age]": 1
+        },
+        "mapped_checks": [
+          "invalid_type[age]",
+          "non_integer_value[age]",
+          "age_out_of_range[age]"
+        ]
+      },
+      {
+        "entity": "users",
+        "category": "invalid_gender",
+        "severity": "warning",
+        "expected": 2,
+        "detected": 2,
+        "recall": 1.0,
+        "detected_by": {
+          "gender_not_allowed[gender]": 1,
+          "missing_value[gender]": 1
+        },
+        "mapped_checks": [
+          "gender_not_allowed[gender]",
+          "missing_value[gender]"
+        ]
+      },
+      {
+        "entity": "users",
+        "category": "exact_duplicate",
+        "severity": "error",
+        "expected": 3,
+        "detected": 3,
+        "recall": 1.0,
+        "detected_by": {
+          "exact_duplicate[*]": 3
+        },
+        "mapped_checks": [
+          "exact_duplicate[*]"
+        ]
+      },
+      {
+        "entity": "items",
+        "category": "missing_title",
+        "severity": "warning",
+        "expected": 2,
+        "detected": 2,
+        "recall": 1.0,
+        "detected_by": {
+          "missing_value[title]": 2
+        },
+        "mapped_checks": [
+          "missing_value[title]"
+        ]
+      },
+      {
+        "entity": "items",
+        "category": "invalid_release_date",
+        "severity": "warning",
+        "expected": 2,
+        "detected": 2,
+        "recall": 1.0,
+        "detected_by": {
+          "invalid_type[release_date]": 2
+        },
+        "mapped_checks": [
+          "invalid_type[release_date]"
+        ]
+      },
+      {
+        "entity": "items",
+        "category": "exact_duplicate",
+        "severity": "error",
+        "expected": 2,
+        "detected": 2,
+        "recall": 1.0,
+        "detected_by": {
+          "exact_duplicate[*]": 2
+        },
+        "mapped_checks": [
+          "exact_duplicate[*]"
+        ]
+      }
+    ],
+    "overall": {
+      "expected": 90,
+      "detected": 90,
+      "matched": 90,
+      "recall": 1.0
+    },
+    "reconciliation": [
+      {
+        "entity": "users",
+        "rejected_rows": 3,
+        "injected_hard": 3,
+        "rows_with_warnings": 10,
+        "injected_soft": 10,
+        "unattributed_rejected": 0,
+        "unattributed_warning_rows": 0,
+        "explanation": "rejected rows match the injected anomalies exactly (3); warning rows match the injected anomalies exactly (10)"
+      },
+      {
+        "entity": "items",
+        "rejected_rows": 2,
+        "injected_hard": 2,
+        "rows_with_warnings": 7,
+        "injected_soft": 4,
+        "unattributed_rejected": 0,
+        "unattributed_warning_rows": 3,
+        "explanation": "rejected rows match the injected anomalies exactly (2); warning: 7 rows = 4 injected + 3 pre-existing source issue(s)"
+      },
+      {
+        "entity": "interactions",
+        "rejected_rows": 71,
+        "injected_hard": 71,
+        "rows_with_warnings": 0,
+        "injected_soft": 0,
+        "unattributed_rejected": 0,
+        "unattributed_warning_rows": 0,
+        "explanation": "rejected rows match the injected anomalies exactly (71); warning rows match the injected anomalies exactly (0)"
+      }
+    ],
+    "unattributed_detections": [
+      {
+        "entity": "items",
+        "check": "missing_value",
+        "column": "imdb_url",
+        "severity": "warning",
+        "rows": 3,
+        "examples": [
+          "item_id=267",
+          "item_id=1358",
+          "item_id=1359"
+        ]
+      },
+      {
+        "entity": "items",
+        "check": "missing_value",
+        "column": "release_date",
+        "severity": "warning",
+        "rows": 1,
+        "examples": [
+          "item_id=267"
+        ]
+      }
+    ]
+  },
+  "findings": [
+    "`users.occupation`: 9 value(s) 'none' kept as a legitimate category value (it is in the MovieLens reference list), not treated as a null token.",
+    "`items.video_release_date` is 100% empty in the raw file - it carries no information and is dropped from the validated layer.",
+    "`items.title`: 3 value(s) had leading/trailing whitespace (stripped).",
+    "`items.imdb_url`: 3 row(s) flagged by `missing_value` (warning) were not injected - pre-existing in the MovieLens source (item_id=267, item_id=1358, item_id=1359).",
+    "`items.release_date`: 1 row(s) flagged by `missing_value` (warning) were not injected - pre-existing in the MovieLens source (item_id=267).",
+    "18 titles are shared by more than one item_id (known MovieLens quirk); kept as distinct items because item_id is the key.",
+    "Ratings are skewed positive: mean 3.53, 55.4% of ratings are >= 4.",
+    "User-item matrix density is 6.30% (sparsity 93.70%); every user has >= 20 ratings, items have 1..583 ratings (long tail).",
+    "Interactions span 1997-09-20 .. 1998-04-22 (214.8 days), inside the configured validity window.",
+    "0 duplicate (user_id, item_id) pair(s) remain after the hard checks (warning only; preparation keeps one row per pair)."
+  ]
+}

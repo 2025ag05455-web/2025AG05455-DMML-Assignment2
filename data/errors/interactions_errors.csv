@@ -1,0 +1,72 @@
+source_row,user_id,item_id,rating,timestamp,error_type,error_column,error_detail,severity
+6053,854,,4,882813825,missing_value,item_id,item_id is missing (raw value ''),error
+6690,881,54,4,-1,timestamp_out_of_range,timestamp,"timestamp=-1: unix timestamp outside [1995-01-01T00:00:00Z, 2000-12-31T23:59:59Z]",error
+7654,846,99999,2,883950185,referential_integrity,item_id,item_id=99999: foreign key not found in the validated parent table,error
+10535,591,,3,891039974,missing_value,item_id,item_id is missing (raw value ''),error
+11627,524,60,-1,884634938,rating_not_allowed,rating,"rating=-1: rating not in allowed_ratings [1, 2, 3, 4, 5]",error
+13700,256,185,4.5,882164696,non_integer_value,rating,rating='4.5' is not an integer,error
+14667,611,315,0,891636098,rating_not_allowed,rating,"rating=0: rating not in allowed_ratings [1, 2, 3, 4, 5]",error
+19223,70,260,2,884065247,exact_duplicate,*,exact duplicate of source_row 16567,error
+19674,,357,5,878955848,missing_value,user_id,user_id is missing (raw value ''),error
+20166,292,499,-1,881105245,rating_not_allowed,rating,"rating=-1: rating not in allowed_ratings [1, 2, 3, 4, 5]",error
+21361,889,1170,2,880182127,exact_duplicate,*,exact duplicate of source_row 1155,error
+22038,72,271,10,880036346,rating_not_allowed,rating,"rating=10: rating not in allowed_ratings [1, 2, 3, 4, 5]",error
+22543,399,1274,five,882350870,invalid_type,rating,rating='five' is not numeric,error
+27168,848,1126,5,1999-13-45,invalid_type,timestamp,timestamp='1999-13-45' is not numeric,error
+28172,276,123,4,abc,invalid_type,timestamp,timestamp='abc' is not numeric,error
+30213,281,338,2,881200457,exact_duplicate,*,exact duplicate of source_row 16797,error
+31531,883,99999,4,891694372,referential_integrity,item_id,item_id=99999: foreign key not found in the validated parent table,error
+32540,883,210,five,891723351,invalid_type,rating,rating='five' is not numeric,error
+36273,889,82,N/A,880180122,missing_value,rating,rating is missing (raw value 'N/A'),error
+36605,417,946,10,880950324,rating_not_allowed,rating,"rating=10: rating not in allowed_ratings [1, 2, 3, 4, 5]",error
+38508,9999,781,4,882398220,referential_integrity,user_id,user_id=9999: foreign key not found in the validated parent table,error
+38535,62,99999,5,879375080,referential_integrity,item_id,item_id=99999: foreign key not found in the validated parent table,error
+41482,405,730,1,885545975,exact_duplicate,*,exact duplicate of source_row 4017,error
+42782,749,,5,878847541,missing_value,item_id,item_id is missing (raw value ''),error
+43424,,524,3,892079910,missing_value,user_id,user_id is missing (raw value ''),error
+46565,524,950,4,0,timestamp_out_of_range,timestamp,"timestamp=0: unix timestamp outside [1995-01-01T00:00:00Z, 2000-12-31T23:59:59Z]",error
+50201,679,153,4.5,884486904,non_integer_value,rating,rating='4.5' is not an integer,error
+51308,898,347,10,888294485,rating_not_allowed,rating,"rating=10: rating not in allowed_ratings [1, 2, 3, 4, 5]",error
+51938,336,276,4,877760310,exact_duplicate,*,exact duplicate of source_row 538,error
+57028,,783,3,883713737,missing_value,user_id,user_id is missing (raw value ''),error
+58149,9999,1194,4,891388210,referential_integrity,user_id,user_id=9999: foreign key not found in the validated parent table,error
+59887,686,99999,5,879545180,referential_integrity,item_id,item_id=99999: foreign key not found in the validated parent table,error
+60006,429,,4,882385985,missing_value,item_id,item_id is missing (raw value ''),error
+61458,548,300,5,891044304,exact_duplicate,*,exact duplicate of source_row 38521,error
+62133,262,283,3,4102444800,timestamp_out_of_range,timestamp,"timestamp=4102444800: unix timestamp outside [1995-01-01T00:00:00Z, 2000-12-31T23:59:59Z]",error
+62649,465,475,3,1999-13-45,invalid_type,timestamp,timestamp='1999-13-45' is not numeric,error
+63314,388,276,2,886440608,exact_duplicate,*,exact duplicate of source_row 44242,error
+64715,303,665,five,879485475,invalid_type,rating,rating='five' is not numeric,error
+65019,,471,4,879861562,missing_value,user_id,user_id is missing (raw value ''),error
+65202,16,227,5,-1,timestamp_out_of_range,timestamp,"timestamp=-1: unix timestamp outside [1995-01-01T00:00:00Z, 2000-12-31T23:59:59Z]",error
+65706,750,331,4,879446114,exact_duplicate,*,exact duplicate of source_row 51550,error
+66763,125,399,3,892838509,exact_duplicate,*,exact duplicate of source_row 1682,error
+66802,524,815,3,884627519,exact_duplicate,*,exact duplicate of source_row 54506,error
+70371,18,962,4,880131631,exact_duplicate,*,exact duplicate of source_row 49279,error
+71908,264,675,4,4102444800,timestamp_out_of_range,timestamp,"timestamp=4102444800: unix timestamp outside [1995-01-01T00:00:00Z, 2000-12-31T23:59:59Z]",error
+72546,329,302,7,891655191,rating_not_allowed,rating,"rating=7: rating not in allowed_ratings [1, 2, 3, 4, 5]",error
+74357,49,11,6,888069458,rating_not_allowed,rating,"rating=6: rating not in allowed_ratings [1, 2, 3, 4, 5]",error
+75672,417,1215,2,879646712,exact_duplicate,*,exact duplicate of source_row 20475,error
+76132,641,23,5,879370364,exact_duplicate,*,exact duplicate of source_row 4052,error
+76534,551,67,5,892785164,exact_duplicate,*,exact duplicate of source_row 46574,error
+77756,,229,2,879848645,missing_value,user_id,user_id is missing (raw value ''),error
+79989,747,286,4,888638335,exact_duplicate,*,exact duplicate of source_row 63407,error
+85195,331,238,4,877196383,exact_duplicate,*,exact duplicate of source_row 80735,error
+85725,226,28,4,883889322,exact_duplicate,*,exact duplicate of source_row 59140,error
+86482,9999,100,4,888333428,referential_integrity,user_id,user_id=9999: foreign key not found in the validated parent table,error
+86826,9999,95,4,884065501,referential_integrity,user_id,user_id=9999: foreign key not found in the validated parent table,error
+87444,655,1406,3,888984325,exact_duplicate,*,exact duplicate of source_row 5231,error
+87864,323,9,6,878739325,rating_not_allowed,rating,"rating=6: rating not in allowed_ratings [1, 2, 3, 4, 5]",error
+89028,419,50,5,-1,timestamp_out_of_range,timestamp,"timestamp=-1: unix timestamp outside [1995-01-01T00:00:00Z, 2000-12-31T23:59:59Z]",error
+92482,840,661,5,891204441,exact_duplicate,*,exact duplicate of source_row 22102,error
+93495,188,176,4,1999-13-45,invalid_type,timestamp,timestamp='1999-13-45' is not numeric,error
+95082,450,792,4,882396050,exact_duplicate,*,exact duplicate of source_row 49339,error
+95156,318,188,-1,884497031,rating_not_allowed,rating,"rating=-1: rating not in allowed_ratings [1, 2, 3, 4, 5]",error
+95539,56,295,3,893257941,exact_duplicate,*,exact duplicate of source_row 55278,error
+95762,94,716,3,885873006,exact_duplicate,*,exact duplicate of source_row 30516,error
+96901,9999,56,5,891204239,referential_integrity,user_id,user_id=9999: foreign key not found in the validated parent table,error
+97128,585,99999,5,891284393,referential_integrity,item_id,item_id=99999: foreign key not found in the validated parent table,error
+97815,650,679,3,891381709,exact_duplicate,*,exact duplicate of source_row 93135,error
+98099,326,44,1,879875852,exact_duplicate,*,exact duplicate of source_row 26387,error
+98424,932,195,4,891250643,exact_duplicate,*,exact duplicate of source_row 17616,error
+99101,714,,5,892777876,missing_value,item_id,item_id is missing (raw value ''),error

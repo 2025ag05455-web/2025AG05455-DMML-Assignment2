@@ -1,0 +1,182 @@
+{
+  "stage": "evaluation",
+  "created_at": "2026-11-14T07:15:37.089065+00:00",
+  "protocol": {
+    "split_method": "time_based",
+    "split_cutoff_utc": "1998-03-07T02:21:09+00:00",
+    "k": 10,
+    "extra_k": [
+      5
+    ],
+    "relevance_threshold": 4,
+    "exclude_seen": true,
+    "ranking_users": "test users with training history and >= 1 relevant test item",
+    "candidate_items": "items in the training catalogue",
+    "rating_metrics_on": "all test interactions of users with training history",
+    "beyond_accuracy": "coverage, diversity (genre ILD) and novelty (-log2 user share) at K=10"
+  },
+  "data": {
+    "n_test_interactions": 19997,
+    "n_test_users": 301,
+    "n_warm_test_users": 109,
+    "n_cold_test_users": 192,
+    "n_warm_test_interactions": 2949,
+    "n_ranking_users": 98,
+    "n_cold_ranking_users": 192,
+    "n_relevant_pairs_warm": 1612,
+    "share_relevant_pairs_on_catalog": 0.974566,
+    "n_catalog_items": 1616,
+    "n_train_users": 751
+  },
+  "primary_metric": "ndcg@10",
+  "best_model": "hybrid",
+  "models": {
+    "popularity": {
+      "run_id": "9b58e3f010e1417dace0b115ade1ba84",
+      "warm": {
+        "precision@10": 0.10816326530612244,
+        "recall@10": 0.08295811356421308,
+        "ndcg@10": 0.13402545937425356,
+        "hit_rate@10": 0.45918367346938777,
+        "map@10": 0.07602155544757586,
+        "precision@5": 0.11632653061224488,
+        "recall@5": 0.06168694100130467,
+        "ndcg@5": 0.13436437032059276,
+        "hit_rate@5": 0.3469387755102041,
+        "map@5": 0.08959750566893424,
+        "coverage": 0.04702970297029703,
+        "diversity": 0.7466751285691466,
+        "novelty": 1.2538708942156462,
+        "rmse": 1.030850645558106,
+        "mae": 0.8326792803811165
+      },
+      "cold_start": {
+        "precision@10": 0.2916666666666667,
+        "recall@10": 0.08647955729693878,
+        "ndcg@10": 0.3152640749055642,
+        "hit_rate@10": 0.921875,
+        "map@10": 0.1804321102476484,
+        "precision@5": 0.33125000000000004,
+        "recall@5": 0.04878488815703535,
+        "ndcg@5": 0.3482409238980963,
+        "hit_rate@5": 0.8020833333333334,
+        "map@5": 0.24699652777777778,
+        "coverage": 0.006188118811881188,
+        "diversity": 0.8052308026278167,
+        "novelty": 0.9372364466065601
+      }
+    },
+    "item_knn": {
+      "run_id": "73066ed4f9b94ed68a7f9424d77f360d",
+      "warm": {
+        "precision@10": 0.10612244897959185,
+        "recall@10": 0.056565205327535624,
+        "ndcg@10": 0.11903795581365949,
+        "hit_rate@10": 0.37755102040816324,
+        "map@10": 0.07385460533419716,
+        "precision@5": 0.11020408163265306,
+        "recall@5": 0.02635864012742316,
+        "ndcg@5": 0.11903777204118401,
+        "hit_rate@5": 0.2857142857142857,
+        "map@5": 0.08411564625850342,
+        "coverage": 0.11324257425742575,
+        "diversity": 0.7083558089123921,
+        "novelty": 2.0419013268204016,
+        "rmse": 1.074319597504372,
+        "mae": 0.8266880495203918
+      },
+      "cold_start": {
+        "precision@10": 0.2916666666666667,
+        "recall@10": 0.08647955729693878,
+        "ndcg@10": 0.3152640749055642,
+        "hit_rate@10": 0.921875,
+        "map@10": 0.1804321102476484,
+        "precision@5": 0.33125000000000004,
+        "recall@5": 0.04878488815703535,
+        "ndcg@5": 0.3482409238980963,
+        "hit_rate@5": 0.8020833333333334,
+        "map@5": 0.24699652777777778,
+        "coverage": 0.006188118811881188,
+        "diversity": 0.8052308026278167,
+        "novelty": 0.9372364466065601
+      }
+    },
+    "mf_svd": {
+      "run_id": "5e25fc30776e41598f8d85a803e1c599",
+      "warm": {
+        "precision@10": 0.07755102040816327,
+        "recall@10": 0.08545407894561274,
+        "ndcg@10": 0.11404112996939131,
+        "hit_rate@10": 0.3673469387755102,
+        "map@10": 0.06851109491415615,
+        "precision@5": 0.09387755102040815,
+        "recall@5": 0.05561443273119146,
+        "ndcg@5": 0.11331006429323195,
+        "hit_rate@5": 0.2857142857142857,
+        "map@5": 0.0789795918367347,
+        "coverage": 0.1021039603960396,
+        "diversity": 0.7318122405410059,
+        "novelty": 2.940352663769154,
+        "rmse": 0.9705945908571333,
+        "mae": 0.7635626205485401
+      },
+      "cold_start": {
+        "precision@10": 0.2916666666666667,
+        "recall@10": 0.08647955729693878,
+        "ndcg@10": 0.3152640749055642,
+        "hit_rate@10": 0.921875,
+        "map@10": 0.1804321102476484,
+        "precision@5": 0.33125000000000004,
+        "recall@5": 0.04878488815703535,
+        "ndcg@5": 0.3482409238980963,
+        "hit_rate@5": 0.8020833333333334,
+        "map@5": 0.24699652777777778,
+        "coverage": 0.006188118811881188,
+        "diversity": 0.8052308026278167,
+        "novelty": 0.9372364466065601
+      }
+    },
+    "hybrid": {
+      "run_id": "42e54a0ed799411c9a33c33a8a6c2758",
+      "warm": {
+        "precision@10": 0.09387755102040815,
+        "recall@10": 0.10103095376858746,
+        "ndcg@10": 0.15333658771794323,
+        "hit_rate@10": 0.4489795918367347,
+        "map@10": 0.0978000485908649,
+        "precision@5": 0.11428571428571428,
+        "recall@5": 0.07420147680382774,
+        "ndcg@5": 0.15848526432297816,
+        "hit_rate@5": 0.35714285714285715,
+        "map@5": 0.11380385487528344,
+        "coverage": 0.11262376237623763,
+        "diversity": 0.4580950381954528,
+        "novelty": 3.116329581951669,
+        "rmse": 0.9705945908571333,
+        "mae": 0.7635626205485401
+      },
+      "cold_start": {
+        "precision@10": 0.2916666666666667,
+        "recall@10": 0.08647955729693878,
+        "ndcg@10": 0.3152640749055642,
+        "hit_rate@10": 0.921875,
+        "map@10": 0.1804321102476484,
+        "precision@5": 0.33125000000000004,
+        "recall@5": 0.04878488815703535,
+        "ndcg@5": 0.3482409238980963,
+        "hit_rate@5": 0.8020833333333334,
+        "map@5": 0.24699652777777778,
+        "coverage": 0.006188118811881188,
+        "diversity": 0.8052308026278167,
+        "novelty": 0.9372364466065601
+      }
+    }
+  },
+  "artifacts": {
+    "comparison_csv": "reports/model_comparison.csv",
+    "comparison_md": "reports/model_comparison.md",
+    "results_json": "reports/evaluation_results.json",
+    "ranking_figure": "reports/figures/model_comparison_ranking.png",
+    "rating_figure": "reports/figures/model_comparison_rating.png"
+  }
+}
